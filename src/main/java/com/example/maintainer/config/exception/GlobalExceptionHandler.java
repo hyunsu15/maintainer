@@ -20,6 +20,14 @@ class GlobalExceptionHandler {
             new ErrorMeta(HttpStatus.BAD_REQUEST.value(), baseException.getMessage())));
   }
 
+  @ExceptionHandler(RuntimeException.class)
+  public ResponseEntity<ErrorResponse> expectedButServerError(RuntimeException exception) {
+    log.info("new Exception, expected server Exception", exception);
+    return ResponseEntity.internalServerError()
+        .body(new ErrorResponse(
+            new ErrorMeta(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage())));
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> unExpectedError(Exception exception) {
     log.info("new Exception, not expected Exception", exception);
