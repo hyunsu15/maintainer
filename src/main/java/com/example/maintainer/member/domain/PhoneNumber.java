@@ -12,7 +12,7 @@ public class PhoneNumber {
 
   public PhoneNumber(String phoneNumber) {
     validate(phoneNumber);
-    this.phoneNumber = phoneNumber.replaceAll("\\d", "");
+    this.phoneNumber = phoneNumber.replaceAll("\\D", "");
   }
 
   private void validate(String phoneNumber) {
@@ -50,5 +50,11 @@ public class PhoneNumber {
       return false;
     }
     return true;
+  }
+
+  public void checkDuplicate(boolean isExistPhoneNumber) {
+    if (isExistPhoneNumber) {
+      throw new AlreadyPhoneNumberException();
+    }
   }
 }

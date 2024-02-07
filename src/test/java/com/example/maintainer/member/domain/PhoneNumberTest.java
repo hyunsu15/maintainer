@@ -32,4 +32,14 @@ class PhoneNumberTest {
     Assertions.assertThatCode(() -> new PhoneNumber(data))
         .doesNotThrowAnyException();
   }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "01012344567,01012344567",
+      "010-1234-1234,01012341234"
+  }, nullValues = "null")
+  void 휴대폰번호는_숫자만_나와야한다(String phoneNumber, String expect) {
+    Assertions.assertThat(new PhoneNumber(phoneNumber).getPhoneNumber()).isEqualTo(expect);
+  }
+
 }
