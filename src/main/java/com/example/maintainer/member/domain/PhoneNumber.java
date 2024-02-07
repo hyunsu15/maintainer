@@ -31,7 +31,7 @@ public class PhoneNumber {
     if (!phoneNumber.startsWith("010")) {
       return false;
     }
-    return (!phoneNumber.replaceAll("\\d", "").isEmpty());
+    return phoneNumber.replaceAll("\\d", "").isEmpty();
   }
 
   private boolean validatePhoneNumberContainsMinusSign(String phoneNumber) {
