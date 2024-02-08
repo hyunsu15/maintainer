@@ -6,3 +6,6 @@ spring:
     password: secret
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
+  redis:
+    host: localhost
+    port: 6379

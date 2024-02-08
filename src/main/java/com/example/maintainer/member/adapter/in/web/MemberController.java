@@ -31,4 +31,11 @@ class MemberController {
             useCase.signIn(new PhoneNumber(request.phoneNumber()),
                 new Password(request.password()))));
   }
+
+  @PostMapping("/sign/out")
+  ResponseEntity<CustomResponse<String>> signOut(SignOutRequest request) {
+    useCase.signOut(request.token());
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(HttpStatus.OK.value(), "OK"), null));
+  }
 }

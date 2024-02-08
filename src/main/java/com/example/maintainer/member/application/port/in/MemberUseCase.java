@@ -8,4 +8,6 @@ public interface MemberUseCase {
   void signUp(PhoneNumber phoneNumber, Password password);
 
   String signIn(PhoneNumber phoneNumber, Password password);
+
+  void signOut(String token);
 }
