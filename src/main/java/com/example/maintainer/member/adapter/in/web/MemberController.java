@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -18,14 +19,14 @@ class MemberController {
   private final MemberUseCase useCase;
 
   @PostMapping("/sign/up")
-  ResponseEntity<CustomResponse> signUp(SignUpRequest request) {
+  ResponseEntity<CustomResponse> signUp(@RequestBody SignUpRequest request) {
     useCase.signUp(new PhoneNumber(request.phoneNumber()), new Password(request.password()));
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(HttpStatus.OK.value(), "OK"), null));
   }
 
   @PostMapping("/sign/in")
-  ResponseEntity<CustomResponse<String>> signIn(SignInRequest request) {
+  ResponseEntity<CustomResponse<String>> signIn(@RequestBody SignInRequest request) {
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(HttpStatus.OK.value(), "OK"),
             useCase.signIn(new PhoneNumber(request.phoneNumber()),
@@ -33,7 +34,7 @@ class MemberController {
   }
 
   @PostMapping("/sign/out")
-  ResponseEntity<CustomResponse<String>> signOut(SignOutRequest request) {
+  ResponseEntity<CustomResponse<String>> signOut(@RequestBody SignOutRequest request) {
     useCase.signOut(request.token());
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(HttpStatus.OK.value(), "OK"), null));
