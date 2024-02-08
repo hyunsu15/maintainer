@@ -6,4 +6,6 @@ import com.example.maintainer.member.domain.PhoneNumber;
 public interface MemberUseCase {
 
   void signUp(PhoneNumber phoneNumber, Password password);
+
+  String signIn(PhoneNumber phoneNumber, Password password);
 }

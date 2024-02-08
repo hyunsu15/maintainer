@@ -22,4 +22,10 @@ public class MemberPersistenceAdapter implements MemberPort {
     memberJpaRepository.save(
         new MemberJpaEntity(phoneNumber.getPhoneNumber(), password.getPassword()));
   }
+
+  @Override
+  public boolean isExistMember(PhoneNumber phoneNumber, Password password) {
+    return memberJpaRepository.existsByPhoneNumberAndPassword(phoneNumber.getPhoneNumber(),
+        password.getPassword());
+  }
 }

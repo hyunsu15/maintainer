@@ -24,4 +24,11 @@ class MemberController {
         .body(new CustomResponse(new Meta(HttpStatus.OK.value(), "OK"), null));
   }
 
+  @PostMapping("/sign/in")
+  ResponseEntity<CustomResponse<String>> signIn(SignInRequest request) {
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(HttpStatus.OK.value(), "OK"),
+            useCase.signIn(new PhoneNumber(request.phoneNumber()),
+                new Password(request.password()))));
+  }
 }

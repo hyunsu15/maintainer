@@ -8,4 +8,6 @@ public interface MemberPort {
   boolean isExistPhoneNumber(PhoneNumber phoneNumber);
 
   void save(PhoneNumber phoneNumber, Password password);
+
+  boolean isExistMember(PhoneNumber phoneNumber, Password password);
 }
