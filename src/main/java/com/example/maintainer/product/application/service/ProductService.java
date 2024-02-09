@@ -20,21 +20,21 @@ public class ProductService implements ProductUseCase {
   @Override
   public void update(String phoneNumber, Product product, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
-    product.validate(existProduct);
+    product.validateElseException(existProduct);
     productPort.update(product, productId);
   }
 
   @Override
   public void delete(String phoneNumber, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
-    new Product().validate(existProduct);
+    new Product().validateElseException(existProduct);
     productPort.delete(phoneNumber, productId);
   }
 
   @Override
   public Product getProduct(String phoneNumber, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
-    new Product().validate(existProduct);
-    return productPort.getProduct(phoneNumber, productId);
+    return new Product().getProduct(existProduct,
+        () -> productPort.getProduct(phoneNumber, productId));
   }
 }

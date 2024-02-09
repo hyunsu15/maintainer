@@ -1,6 +1,7 @@
 package com.example.maintainer.product.domain;
 
 import java.time.LocalDateTime;
+import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -45,9 +46,16 @@ public class Product {
     this.expiredDate = expiredDate;
   }
 
-  public void validate(boolean existProduct) {
+  public void validateElseException(boolean existProduct) {
     if (!existProduct) {
       throw new ProductNotFoundException();
     }
+  }
+
+  public Product getProduct(boolean existProduct, Supplier<Product> supplier) {
+    if (!existProduct) {
+      return null;
+    }
+    return supplier.get();
   }
 }
