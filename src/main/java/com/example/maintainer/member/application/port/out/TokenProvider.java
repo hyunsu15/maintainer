@@ -6,4 +6,6 @@ import java.util.Date;
 public interface TokenProvider {
 
   String generateToken(PhoneNumber phoneNumber, Date now);
+
+  String decryptedToken(String token);
 }
