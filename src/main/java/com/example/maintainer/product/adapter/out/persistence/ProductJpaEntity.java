@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,11 +42,13 @@ public class ProductJpaEntity {
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private SIZE size;
+  @Column(nullable = false)
+  private LocalDateTime expiredDate;
 
   ProductJpaEntity(String category, String memberPhoneNumber, Long salePrice, Long cost,
       String name,
       String description,
-      Long barcode, SIZE size) {
+      Long barcode, SIZE size, LocalDateTime expiredDate) {
     this.category = category;
     this.memberPhoneNumber = memberPhoneNumber;
     this.salePrice = salePrice;
@@ -54,10 +57,12 @@ public class ProductJpaEntity {
     this.description = description;
     this.barcode = barcode;
     this.size = size;
+    this.expiredDate = expiredDate;
   }
 
   ProductJpaEntity(String memberPhoneNumber, Product product) {
     this(product.getCategory(), memberPhoneNumber, product.getSalePrice(), product.getCost(),
-        product.getName(), product.getDescription(), product.getBarcode(), product.getSize());
+        product.getName(), product.getDescription(), product.getBarcode(), product.getSize(),
+        product.getExpiredDate());
   }
 }

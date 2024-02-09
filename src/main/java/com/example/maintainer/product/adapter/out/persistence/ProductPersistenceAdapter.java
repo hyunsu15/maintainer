@@ -45,6 +45,7 @@ public class ProductPersistenceAdapter implements ProductPort {
         .barcode(productJpaEntity.getBarcode())
         .description(productJpaEntity.getDescription())
         .category(productJpaEntity.getCategory())
+        .expiredDate(productJpaEntity.getExpiredDate())
         .build();
   }
 }

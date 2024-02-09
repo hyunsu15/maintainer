@@ -33,6 +33,7 @@ public class ProductController {
             .cost(request.cost())
             .salePrice(request.salePrice())
             .description(request.description())
+            .expiredDate(request.expiredDate())
             .build()
     );
     return ResponseEntity.ok()
@@ -53,6 +54,7 @@ public class ProductController {
             .cost(request.cost())
             .salePrice(request.salePrice())
             .description(request.description())
+            .expiredDate(request.expiredDate())
             .build(), id
     );
     return ResponseEntity.ok()
