@@ -33,4 +33,18 @@ public class ProductPersistenceAdapter implements ProductPort {
   public void delete(String phoneNumber, Long productId) {
     productJpaRepository.deleteById(productId);
   }
+
+  @Override
+  public Product getProduct(String phoneNumber, Long productId) {
+    ProductJpaEntity productJpaEntity = productJpaRepository.findById(productId).get();
+    return Product.detail()
+        .name(productJpaEntity.getName())
+        .size(productJpaEntity.getSize())
+        .cost(productJpaEntity.getCost())
+        .salePrice(productJpaEntity.getSalePrice())
+        .barcode(productJpaEntity.getBarcode())
+        .description(productJpaEntity.getDescription())
+        .category(productJpaEntity.getCategory())
+        .build();
+  }
 }

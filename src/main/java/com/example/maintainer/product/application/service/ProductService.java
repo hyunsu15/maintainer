@@ -30,4 +30,11 @@ public class ProductService implements ProductUseCase {
     new Product().validate(existProduct);
     productPort.delete(phoneNumber, productId);
   }
+
+  @Override
+  public Product getProduct(String phoneNumber, Long productId) {
+    boolean existProduct = productPort.existProduct(phoneNumber, productId);
+    new Product().validate(existProduct);
+    return productPort.getProduct(phoneNumber, productId);
+  }
 }

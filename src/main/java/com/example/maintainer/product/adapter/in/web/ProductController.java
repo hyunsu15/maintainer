@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class ProductController {
   ResponseEntity<CustomResponse> create(PhoneNumber phoneNumber,
       @RequestBody ProductCreateRequest request) {
     useCase.create(phoneNumber.phoneNumber(),
-        Product.builder()
+        Product.create()
             .name(request.name())
             .size(request.size())
             .barcode(request.barcode())
@@ -44,7 +45,7 @@ public class ProductController {
       @PathVariable("id") Long id, @RequestBody ProductUpdateRequest request
   ) {
     useCase.update(phoneNumber.phoneNumber(),
-        Product.builder()
+        Product.create()
             .name(request.name())
             .size(request.size())
             .barcode(request.barcode())
@@ -66,5 +67,17 @@ public class ProductController {
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(
             HttpStatus.OK.value(), "OK"), null));
+  }
+
+  @GetMapping("{id}")
+  ResponseEntity<CustomResponse<Product>> getProduct(PhoneNumber phoneNumber,
+      @PathVariable("id") Long id) {
+    Product product = useCase.getProduct(phoneNumber.phoneNumber(), id);
+    if (product == null) {
+      return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(
+            HttpStatus.OK.value(), "OK"), product));
   }
 }

@@ -9,4 +9,6 @@ public interface ProductUseCase {
   void update(String phoneNumber, Product product, Long productId);
 
   void delete(String phoneNumber, Long productId);
+
+  Product getProduct(String phoneNumber, Long productId);
 }

@@ -12,13 +12,12 @@ public class Product {
   private String name;
   private String description;
   private Long barcode;
-
   private SIZE size;
 
   public Product() {
   }
 
-  @Builder
+  @Builder(builderMethodName = "create", builderClassName = "string")
   public Product(String category, Long salePrice, Long cost, String name, String description,
       Long barcode, String size) {
     this.category = category;
@@ -28,6 +27,18 @@ public class Product {
     this.description = description;
     this.barcode = barcode;
     this.size = SIZE.getMatchSize(size);
+  }
+
+  @Builder(builderMethodName = "detail", builderClassName = "size")
+  public Product(String category, Long salePrice, Long cost, String name, String description,
+      Long barcode, SIZE size) {
+    this.category = category;
+    this.salePrice = salePrice;
+    this.cost = cost;
+    this.name = name;
+    this.description = description;
+    this.barcode = barcode;
+    this.size = size;
   }
 
   public void validate(boolean existProduct) {

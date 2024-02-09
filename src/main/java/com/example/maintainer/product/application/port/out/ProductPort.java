@@ -11,4 +11,6 @@ public interface ProductPort {
   void update(Product product, Long productId);
 
   void delete(String phoneNumber, Long productId);
+
+  Product getProduct(String phoneNumber, Long productId);
 }
