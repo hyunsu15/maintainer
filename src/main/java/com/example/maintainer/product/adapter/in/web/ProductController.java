@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +54,15 @@ public class ProductController {
             .description(request.description())
             .build(), id
     );
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(
+            HttpStatus.OK.value(), "OK"), null));
+  }
+
+  @DeleteMapping("{id}")
+  ResponseEntity<CustomResponse> delete(PhoneNumber phoneNumber,
+      @PathVariable("id") Long id) {
+    useCase.delete(phoneNumber.phoneNumber(), id);
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(
             HttpStatus.OK.value(), "OK"), null));

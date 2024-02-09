@@ -28,4 +28,9 @@ public class ProductPersistenceAdapter implements ProductPort {
     CustomReflectionUtil.setFieldValues(productJpaEntity, product);
     productJpaRepository.save(productJpaEntity);
   }
+
+  @Override
+  public void delete(String phoneNumber, Long productId) {
+    productJpaRepository.deleteById(productId);
+  }
 }

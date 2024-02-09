@@ -15,6 +15,9 @@ public class Product {
 
   private SIZE size;
 
+  public Product() {
+  }
+
   @Builder
   public Product(String category, Long salePrice, Long cost, String name, String description,
       Long barcode, String size) {

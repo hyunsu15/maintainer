@@ -7,4 +7,6 @@ public interface ProductUseCase {
   void create(String phoneNumber, Product product);
 
   void update(String phoneNumber, Product product, Long productId);
+
+  void delete(String phoneNumber, Long productId);
 }

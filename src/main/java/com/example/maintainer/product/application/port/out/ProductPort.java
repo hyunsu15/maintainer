@@ -9,4 +9,6 @@ public interface ProductPort {
   boolean existProduct(String phoneNumber, Long productId);
 
   void update(Product product, Long productId);
+
+  void delete(String phoneNumber, Long productId);
 }

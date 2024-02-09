@@ -23,4 +23,11 @@ public class ProductService implements ProductUseCase {
     product.validate(existProduct);
     productPort.update(product, productId);
   }
+
+  @Override
+  public void delete(String phoneNumber, Long productId) {
+    boolean existProduct = productPort.existProduct(phoneNumber, productId);
+    new Product().validate(existProduct);
+    productPort.delete(phoneNumber, productId);
+  }
 }
