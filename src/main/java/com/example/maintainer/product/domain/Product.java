@@ -26,4 +26,10 @@ public class Product {
     this.barcode = barcode;
     this.size = SIZE.getMatchSize(size);
   }
+
+  public void validate(boolean existProduct) {
+    if (!existProduct) {
+      throw new ProductNotFoundException();
+    }
+  }
 }

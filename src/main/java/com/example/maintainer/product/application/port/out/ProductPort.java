@@ -5,4 +5,8 @@ import com.example.maintainer.product.domain.Product;
 public interface ProductPort {
 
   void save(String phoneNumber, Product product);
+
+  boolean existProduct(String phoneNumber, Long productId);
+
+  void update(Product product, Long productId);
 }

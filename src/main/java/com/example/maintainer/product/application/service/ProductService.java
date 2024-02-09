@@ -16,4 +16,11 @@ public class ProductService implements ProductUseCase {
   public void create(String phoneNumber, Product product) {
     productPort.save(phoneNumber, product);
   }
+
+  @Override
+  public void update(String phoneNumber, Product product, Long productId) {
+    boolean existProduct = productPort.existProduct(phoneNumber, productId);
+    product.validate(existProduct);
+    productPort.update(product, productId);
+  }
 }

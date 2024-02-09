@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,26 @@ public class ProductController {
             .salePrice(request.salePrice())
             .description(request.description())
             .build()
+    );
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(
+            HttpStatus.OK.value(), "OK"), null));
+  }
+
+  @PatchMapping("{id}")
+  ResponseEntity<CustomResponse> update(PhoneNumber phoneNumber,
+      @PathVariable("id") Long id, @RequestBody ProductUpdateRequest request
+  ) {
+    useCase.update(phoneNumber.phoneNumber(),
+        Product.builder()
+            .name(request.name())
+            .size(request.size())
+            .barcode(request.barcode())
+            .category(request.category())
+            .cost(request.cost())
+            .salePrice(request.salePrice())
+            .description(request.description())
+            .build(), id
     );
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(
