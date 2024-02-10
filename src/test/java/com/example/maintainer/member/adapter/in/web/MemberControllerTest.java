@@ -82,7 +82,7 @@ class MemberControllerTest extends ControllerTestMustExtends {
   private RequestBuilder 회원가입(String phoneNumber, String password) throws JsonProcessingException {
     return post("/member/sign/up")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(new SignInRequest(phoneNumber, password)));
+        .content(objectMapper.writeValueAsString(new SignUpRequest(phoneNumber, password)));
   }
 
   private RequestBuilder 로그인(String phoneNumber, String password) throws JsonProcessingException {
