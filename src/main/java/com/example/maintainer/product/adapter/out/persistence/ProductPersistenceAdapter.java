@@ -51,7 +51,7 @@ public class ProductPersistenceAdapter implements ProductPort {
   }
 
   @Override
-  public Product getProduct(String phoneNumber, Long productId) {
+  public Product findProduct(String phoneNumber, Long productId) {
     ProductJpaEntity productJpaEntity = productJpaRepository.findById(productId).get();
     return Product.detail()
         .name(productJpaEntity.getName())
@@ -67,7 +67,7 @@ public class ProductPersistenceAdapter implements ProductPort {
 
 
   @Override
-  public List<ProductSearch> getProductByLike(String phoneNumber, String searchValue) {
+  public List<ProductSearch> findProductByLike(String phoneNumber, String searchValue) {
     return productJpaRepository.findAll(equalsPhoneNumber(phoneNumber)
             .and(likeName(searchValue)))
         .stream()
@@ -79,7 +79,7 @@ public class ProductPersistenceAdapter implements ProductPort {
   }
 
   @Override
-  public List<ProductSearch> getProductByFirstWord(String phoneNumber, String searchValue) {
+  public List<ProductSearch> findProductByFirstWord(String phoneNumber, String searchValue) {
     List<Long> productIds = productSearchJpaRepository.findAll(
             (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("firstInitialName"),
                 "%" + searchValue + "%"))

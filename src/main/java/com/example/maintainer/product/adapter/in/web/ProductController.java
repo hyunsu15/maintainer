@@ -75,9 +75,9 @@ public class ProductController {
   }
 
   @GetMapping("{id}")
-  ResponseEntity<CustomResponse<Product>> getProduct(PhoneNumber phoneNumber,
+  ResponseEntity<CustomResponse<Product>> findProduct(PhoneNumber phoneNumber,
       @PathVariable("id") Long id) {
-    Product product = useCase.getProduct(phoneNumber.phoneNumber(), id);
+    Product product = useCase.findProduct(phoneNumber.phoneNumber(), id);
     if (product == null) {
       return ResponseEntity.noContent().build();
     }
@@ -87,9 +87,9 @@ public class ProductController {
   }
 
   @GetMapping("search")
-  ResponseEntity<CustomResponse<List<ProductSearch>>> getProductBySearch(PhoneNumber phoneNumber,
+  ResponseEntity<CustomResponse<List<ProductSearch>>> findProductBySearch(PhoneNumber phoneNumber,
       ProductSearchRequest request) {
-    List<ProductSearch> products = useCase.getProductBySearch(phoneNumber.phoneNumber(),
+    List<ProductSearch> products = useCase.findProductsBySearch(phoneNumber.phoneNumber(),
         request.searchValue());
     if (products.isEmpty()) {
       return ResponseEntity.noContent().build();

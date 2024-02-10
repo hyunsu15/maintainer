@@ -13,9 +13,9 @@ public interface ProductUseCase {
 
   void delete(String phoneNumber, Long productId);
 
-  Product getProduct(String phoneNumber, Long productId);
+  Product findProduct(String phoneNumber, Long productId);
 
-  List<ProductSearch> getProductBySearch(String phoneNumber, String searchValue);
+  List<ProductSearch> findProductsBySearch(String phoneNumber, String searchValue);
 
   List<ProductSearch> findProductsByCursorId(String phoneNumber, CursorId cursorId);
 

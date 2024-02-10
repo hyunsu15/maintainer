@@ -15,11 +15,11 @@ public interface ProductPort {
 
   void delete(String phoneNumber, Long productId);
 
-  Product getProduct(String phoneNumber, Long productId);
+  Product findProduct(String phoneNumber, Long productId);
 
-  List<ProductSearch> getProductByLike(String phoneNumber, String searchValue);
+  List<ProductSearch> findProductByLike(String phoneNumber, String searchValue);
 
-  List<ProductSearch> getProductByFirstWord(String phoneNumber, String searchValue);
+  List<ProductSearch> findProductByFirstWord(String phoneNumber, String searchValue);
 
   List<ProductSearch> findProductsByCursorId(String phoneNumber, CursorId cursorId);
 

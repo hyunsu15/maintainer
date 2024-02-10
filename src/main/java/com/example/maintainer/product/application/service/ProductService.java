@@ -36,17 +36,17 @@ public class ProductService implements ProductUseCase {
   }
 
   @Override
-  public Product getProduct(String phoneNumber, Long productId) {
+  public Product findProduct(String phoneNumber, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
     return new Product().getProduct(existProduct,
         () -> productPort.getProduct(phoneNumber, productId));
   }
 
   @Override
-  public List<ProductSearch> getProductBySearch(String phoneNumber, String searchValue) {
+  public List<ProductSearch> findProductsBySearch(String phoneNumber, String searchValue) {
     return Stream.concat(
-            productPort.getProductByLike(phoneNumber, searchValue).stream(),
-            productPort.getProductByFirstWord(phoneNumber, searchValue).stream()
+            productPort.findProductByLike(phoneNumber, searchValue).stream(),
+            productPort.findProductByFirstWord(phoneNumber, searchValue).stream()
         )
         .distinct()
         .toList();
