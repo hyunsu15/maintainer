@@ -1,12 +1,14 @@
 package com.example.maintainer.product.adapter.out.persistence;
 
 import com.example.maintainer.product.application.port.out.ProductPort;
+import com.example.maintainer.product.domain.CursorId;
 import com.example.maintainer.product.domain.FirstInitial;
 import com.example.maintainer.product.domain.Product;
 import com.example.maintainer.product.domain.ProductSearch;
 import com.example.maintainer.product.util.CustomReflectionUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
@@ -92,6 +94,35 @@ public class ProductPersistenceAdapter implements ProductPort {
             productSearchVo.getCost(), productSearchVo.getName(), productSearchVo.getSize(),
             productSearchVo.getExpiredDate()))
         .toList();
+  }
+
+  @Override
+  public List<ProductSearch> findProductsByCursorId(String phoneNumber, CursorId cursorId) {
+    return productJpaRepository.findAll(equalsPhoneNumber(phoneNumber).and(
+                (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("id"),
+                    cursorId.getId())
+            ), PageRequest.of(0, 10)
+        )
+        .stream()
+        .map(productSearchVo -> new ProductSearch(productSearchVo.getId(),
+            productSearchVo.getSalePrice(),
+            productSearchVo.getCost(), productSearchVo.getName(), productSearchVo.getSize(),
+            productSearchVo.getExpiredDate()))
+        .toList();
+  }
+
+  @Override
+  public CursorId findNextCursorId(String phoneNumber, CursorId cursorId) {
+    return productJpaRepository.findAll(equalsPhoneNumber(phoneNumber).and(
+                (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("id"),
+                    cursorId.getId())
+            ), PageRequest.of(0, 1)
+        )
+        .stream()
+        .map(productJpaEntity -> new CursorId(productJpaEntity.getId()))
+        .findAny()
+        .orElseGet(() -> new CursorId(cursorId.getId() + 1L));
+
   }
 
   private Specification<ProductJpaEntity> equalsPhoneNumber(String phoneNumber) {

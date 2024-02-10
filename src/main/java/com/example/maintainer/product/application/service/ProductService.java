@@ -2,6 +2,7 @@ package com.example.maintainer.product.application.service;
 
 import com.example.maintainer.product.application.port.in.ProductUseCase;
 import com.example.maintainer.product.application.port.out.ProductPort;
+import com.example.maintainer.product.domain.CursorId;
 import com.example.maintainer.product.domain.Product;
 import com.example.maintainer.product.domain.ProductSearch;
 import java.util.List;
@@ -49,5 +50,15 @@ public class ProductService implements ProductUseCase {
         )
         .distinct()
         .toList();
+  }
+
+  @Override
+  public List<ProductSearch> findProductsByCursorId(String phoneNumber, CursorId cursorId) {
+    return productPort.findProductsByCursorId(phoneNumber, cursorId);
+  }
+
+  @Override
+  public CursorId findNextCursorId(String phoneNumber, CursorId cursorId) {
+    return productPort.findNextCursorId(phoneNumber, cursorId);
   }
 }

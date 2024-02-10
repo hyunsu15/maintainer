@@ -1,5 +1,6 @@
 package com.example.maintainer.product.application.port.in;
 
+import com.example.maintainer.product.domain.CursorId;
 import com.example.maintainer.product.domain.Product;
 import com.example.maintainer.product.domain.ProductSearch;
 import java.util.List;
@@ -15,4 +16,8 @@ public interface ProductUseCase {
   Product getProduct(String phoneNumber, Long productId);
 
   List<ProductSearch> getProductBySearch(String phoneNumber, String searchValue);
+
+  List<ProductSearch> findProductsByCursorId(String phoneNumber, CursorId cursorId);
+
+  CursorId findNextCursorId(String phoneNumber, CursorId lastCursorId);
 }

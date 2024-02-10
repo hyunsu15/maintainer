@@ -1,6 +1,7 @@
 package com.example.maintainer.product.adapter.in.web;
 
 import com.example.maintainer.product.application.port.in.ProductUseCase;
+import com.example.maintainer.product.domain.CursorId;
 import com.example.maintainer.product.domain.Product;
 import com.example.maintainer.product.domain.ProductSearch;
 import java.util.List;
@@ -97,4 +98,23 @@ public class ProductController {
         .body(new CustomResponse(new Meta(
             HttpStatus.OK.value(), "OK"), products));
   }
+
+  @GetMapping("list")
+  ResponseEntity<CustomResponse<List<ProductSearchWithNextCursorIdResponse>>> findProductsByCursorId(
+      PhoneNumber phoneNumber,
+      ProductFindByCursorIdRequest request) {
+    List<ProductSearch> products = useCase.findProductsByCursorId(phoneNumber.phoneNumber(),
+        new CursorId(request.cursorId()));
+    if (products.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+
+    CursorId nextCursorId = useCase.findNextCursorId(phoneNumber.phoneNumber(),
+        new CursorId(products.getLast().id()));
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(
+            HttpStatus.OK.value(), "OK"),
+            new ProductSearchWithNextCursorIdResponse(products, nextCursorId.getId())));
+  }
+
 }
