@@ -4,8 +4,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.example.maintainer.ControllerTestMustExtends;
+import com.example.maintainer.product.domain.ProductSearch;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -88,6 +90,13 @@ class ProductControllerTest extends ControllerTestMustExtends {
         .header("X-USER-ID", token);
   }
 
+  private List<ProductSearch> 상품커서조회결과(MockHttpServletResponse response) throws Exception {
+    return objectMapper.readValue(
+        response.getContentAsString(),
+        new TypeReference<CustomResponse<ProductSearchWithNextCursorIdResponse>>() {
+        }).getData().productSearches();
+  }
+
   @Nested
   class 상품저장 {
 
@@ -164,13 +173,10 @@ class ProductControllerTest extends ControllerTestMustExtends {
       }
       String token = canUseToken;
       MockHttpServletResponse response = api호출(상품커서조회(0L, token));
-      CustomResponse<ProductSearchWithNextCursorIdResponse> result = objectMapper.readValue(
-          response.getContentAsString(),
-          new TypeReference<CustomResponse<ProductSearchWithNextCursorIdResponse>>() {
-          });
+      List<ProductSearch> result = 상품커서조회결과(response);
 
       Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-      Assertions.assertThat(result.getData().productSearches().size()).isEqualTo(expectSize);
+      Assertions.assertThat(result.size()).isEqualTo(expectSize);
     }
 
     @Test
@@ -208,12 +214,10 @@ class ProductControllerTest extends ControllerTestMustExtends {
         로그인후_상품등록(token);
       }
       MockHttpServletResponse response = api호출(상품커서조회(0L, token));
-      CustomResponse<ProductSearchWithNextCursorIdResponse> result = objectMapper.readValue(
-          response.getContentAsString(),
-          new TypeReference<CustomResponse<ProductSearchWithNextCursorIdResponse>>() {
-          });
+      List<ProductSearch> result = 상품커서조회결과(response);
+
       Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-      Assertions.assertThat(result.getData().productSearches().size()).isEqualTo(expectSize);
+      Assertions.assertThat(result.size()).isEqualTo(expectSize);
     }
   }
 }
