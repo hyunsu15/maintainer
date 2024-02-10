@@ -1,5 +1,6 @@
 package com.example.maintainer.product.adapter.in.web;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -111,6 +112,60 @@ class ProductControllerTest extends ControllerTestMustExtends {
         .header("X-USER-ID", token)
         .contentType(MediaType.APPLICATION_JSON)
         .content(request);
+  }
+
+  private RequestBuilder 상품삭제(Long id, String token) {
+    return delete("/product/{id}", id)
+        .header("X-USER-ID", token);
+  }
+
+  @Nested
+  class 상품삭제 {
+
+    @Test
+    void 사장님이_로그인하지않은경우_상품은_삭제되지_않는다() throws Exception {
+      String canUseToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(canUseToken);
+
+      String token = 만기된토큰;
+      Long productId = 상품커서조회결과(canUseToken).get(0).id();
+
+      MockHttpServletResponse response = api호출(상품삭제(productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우라도_상품이_없으면_삭제되지_않는다() throws Exception {
+      String canUseToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(canUseToken);
+
+      String token = 만기된토큰;
+      Long productId = Long.MIN_VALUE;
+
+      MockHttpServletResponse response = api호출(상품삭제(productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우라도_남의상품은_삭제되지_않는다() throws Exception {
+      String otherToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(otherToken);
+      Long productId = 상품커서조회결과(otherToken).get(0).id();
+      String token = 회원가입로그인성공후토큰반환("010-7894-7894");
+
+      MockHttpServletResponse response = api호출(상품삭제(productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우_상품은_삭제된다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+      Long productId = 상품커서조회결과(token).get(0).id();
+
+      MockHttpServletResponse response = api호출(상품삭제(productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
   }
 
   @Nested
