@@ -38,6 +38,7 @@ public class MemberService implements MemberUseCase {
 
   @Override
   public void signOut(String token) {
+    tokenProvider.decryptedToken(token);
     blackListPort.save(token);
   }
 }
