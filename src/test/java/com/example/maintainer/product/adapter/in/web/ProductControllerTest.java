@@ -1,6 +1,7 @@
 package com.example.maintainer.product.adapter.in.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.example.maintainer.ControllerTestMustExtends;
@@ -95,6 +96,78 @@ class ProductControllerTest extends ControllerTestMustExtends {
         response.getContentAsString(),
         new TypeReference<CustomResponse<ProductSearchWithNextCursorIdResponse>>() {
         }).getData().productSearches();
+  }
+
+  private List<ProductSearch> 상품커서조회결과(String token) throws Exception {
+    MockHttpServletResponse response = api호출(상품커서조회(0L, token));
+    return objectMapper.readValue(
+        response.getContentAsString(),
+        new TypeReference<CustomResponse<ProductSearchWithNextCursorIdResponse>>() {
+        }).getData().productSearches();
+  }
+
+  private RequestBuilder 상품업데이트(String request, Long id, String token) {
+    return patch("/product/{id}", id)
+        .header("X-USER-ID", token)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(request);
+  }
+
+  @Nested
+  class 상품업데이트 {
+
+    String product = "{\n"
+        + "      \"category\":\"asdf\",\n"
+        + "        \"salePrice\":1234,\n"
+        + "        \"name\":\"test\",\n"
+        + "        \"description\":\"123\",\n"
+        + "        \"barcode\":123000,\n"
+        + "        \"size\":\"large\",\n"
+        + "        \"expiredDate\":\"2023-02-12T00:00:00\"\n"
+        + "    }";
+
+    @Test
+    void 사장님이_로그인하지않은경우_상품은_업데이트되지_않는다() throws Exception {
+      String canUseToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(canUseToken);
+
+      String token = 만기된토큰;
+      Long productId = 상품커서조회결과(canUseToken).get(0).id();
+
+      MockHttpServletResponse response = api호출(상품업데이트(product, productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우라도_상품이_없으면_업데이트되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+      Long productId = Long.MIN_VALUE;
+
+      MockHttpServletResponse response = api호출(상품업데이트(product, productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우라도_남의상품은_업데이트되지_않는다() throws Exception {
+      String otherToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(otherToken);
+      Long productId = 상품커서조회결과(otherToken).get(0).id();
+      String token = 회원가입로그인성공후토큰반환("010-7894-7894");
+
+      MockHttpServletResponse response = api호출(상품업데이트(product, productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우_상품은_업데이트된다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+      Long productId = 상품커서조회결과(token).get(0).id();
+
+      MockHttpServletResponse response = api호출(상품업데이트(product, productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
   }
 
   @Nested
