@@ -52,7 +52,7 @@ public class Product {
     }
   }
 
-  public Product getProduct(boolean existProduct, Supplier<Product> supplier) {
+  public Product findProductElseException(boolean existProduct, Supplier<Product> supplier) {
     if (!existProduct) {
       return null;
     }

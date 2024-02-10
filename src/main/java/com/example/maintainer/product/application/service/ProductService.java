@@ -38,8 +38,8 @@ public class ProductService implements ProductUseCase {
   @Override
   public Product findProduct(String phoneNumber, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
-    return new Product().getProduct(existProduct,
-        () -> productPort.getProduct(phoneNumber, productId));
+    return new Product().findProductElseException(existProduct,
+        () -> productPort.findProduct(phoneNumber, productId));
   }
 
   @Override
