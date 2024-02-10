@@ -100,18 +100,19 @@ class ProductControllerTest extends ControllerTestMustExtends {
   @Nested
   class 상품저장 {
 
+    private final String product = "{\n"
+        + "      \"category\":\"asdf\",\n"
+        + "        \"salePrice\":1234,\n"
+        + "        \"cost\": 500,\n"
+        + "        \"name\":\"test\",\n"
+        + "        \"description\":\"test\",\n"
+        + "        \"barcode\":12341234,\n"
+        + "        \"size\":\"small\",\n"
+        + "        \"expiredDate\":\"2023-02-12T00:00:00\"\n"
+        + "    }";
+
     @Test
     void 사장님이_로그인하지않은경우_상품은_저장되지_않는다() throws Exception {
-      String product = "{\n"
-          + "    \"category\":\"asdf\",\n"
-          + "    \"salePrice\":1234,\n"
-          + "    \"cost\": 500,\n"
-          + "    \"name\":\"test\",\n"
-          + "    \"description\":\"test\",\n"
-          + "    \"barcode\":12341234,\n"
-          + "    \"size\":\"small\",\n"
-          + "    \"expiredDate\":\"2023-02-12T00:00:00\"\n"
-          + "}";
       String token = 만기된토큰;
       MockHttpServletResponse response = api호출(상품저장(product, token));
       Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -119,16 +120,7 @@ class ProductControllerTest extends ControllerTestMustExtends {
 
     @Test
     void 사장님이_로그인한_경우_상품은_저장된다() throws Exception {
-      String product = "{\n"
-          + "      \"category\":\"asdf\",\n"
-          + "        \"salePrice\":1234,\n"
-          + "        \"cost\": 500,\n"
-          + "        \"name\":\"test\",\n"
-          + "        \"description\":\"test\",\n"
-          + "        \"barcode\":12341234,\n"
-          + "        \"size\":\"small\",\n"
-          + "        \"expiredDate\":\"2023-02-12T00:00:00\"\n"
-          + "    }";
+
       String token = 회원가입로그인성공후토큰반환();
       MockHttpServletResponse response = api호출(상품저장(product, token));
       Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
