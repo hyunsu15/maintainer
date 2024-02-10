@@ -35,7 +35,7 @@ class ProductControllerTest extends ControllerTestMustExtends {
         + "      \"category\":\"asdf\",\n"
         + "        \"salePrice\":1234,\n"
         + "        \"cost\": 500,\n"
-        + "        \"name\":\"test\",\n"
+        + "        \"name\":\"슈크림 라때\",\n"
         + "        \"description\":\"test\",\n"
         + "        \"barcode\":12341234,\n"
         + "        \"size\":\"small\",\n"
@@ -122,6 +122,66 @@ class ProductControllerTest extends ControllerTestMustExtends {
   private RequestBuilder 상품상세조회(Long id, String token) {
     return get("/product/{id}", id)
         .header("X-USER-ID", token);
+  }
+
+  private RequestBuilder 상품이름검색(String searchValue, String token) {
+    return get("/product/search")
+        .param("searchValue", searchValue)
+        .header("X-USER-ID", token);
+  }
+
+  @Nested
+  class 상품이름검색 {
+
+    String searchValue = "슈크림";
+
+    @Test
+    void 사장님이_로그인하지않은경우_상품은_검색되지_않는다() throws Exception {
+      String canUseToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(canUseToken);
+
+      String token = 만기된토큰;
+
+      MockHttpServletResponse response = api호출(상품이름검색(searchValue, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우라도_상품이_없으면_검색되지_않는다() throws Exception {
+      String canUseToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(canUseToken);
+
+      String token = canUseToken;
+      String searchValue = "없는이름";
+
+      MockHttpServletResponse response = api호출(상품이름검색(searchValue, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 사장님이_로그인한_경우라도_남의상품은_조회되지_않는다() throws Exception {
+      String otherToken = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(otherToken);
+      String token = 회원가입로그인성공후토큰반환("010-7894-7894");
+
+      MockHttpServletResponse response = api호출(상품이름검색(searchValue, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "슈크림",
+        "크림",
+        "ㅅㅋㄹ",
+        "ㄹㄸ"
+    })
+    void 사장님이_로그인한_경우_자신의_상품은_검색된다(String searchValue) throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+
+      MockHttpServletResponse response = api호출(상품이름검색(searchValue, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
   }
 
   @Nested
