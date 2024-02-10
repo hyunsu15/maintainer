@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,11 +17,13 @@ public class ProductService implements ProductUseCase {
 
   private final ProductPort productPort;
 
+  @Transactional
   @Override
   public void create(String phoneNumber, Product product) {
     productPort.save(phoneNumber, product);
   }
 
+  @Transactional
   @Override
   public void update(String phoneNumber, Product product, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
@@ -28,6 +31,7 @@ public class ProductService implements ProductUseCase {
     productPort.update(product, productId);
   }
 
+  @Transactional
   @Override
   public void delete(String phoneNumber, Long productId) {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
