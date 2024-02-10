@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.example.maintainer.ControllerTestMustExtends;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,6 +80,33 @@ class MemberControllerTest extends ControllerTestMustExtends {
     Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
   }
 
+  @ParameterizedTest
+  @CsvSource(value = {
+      "qwe",
+      "1234",
+      "토큰토큰",
+      "토큰 토큰",
+      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMTAxMjM0MTIzNCIsImlhdCI6MTcwNzM4MzU4NywiZXhwIjoxNzA3NDY5OTg3fQ.QxOWWl7c9SEPTSYNZfF4XvE7K8cDKHU9yL5uTINR1DrvxD9evgaSLG4xCi4yP0ZulI0M8FK2VorCAZb_tLTCMQ"
+  })
+  void 유효하지않은_토큰이아닌경우_로그아웃이_되지않는다(String token) throws Exception {
+    MockHttpServletResponse response = api호출(로그아웃(token));
+    Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  void 유효한_토큰일경우_로그아웃이_된다() throws Exception {
+    String phoneNumber = "010-1234-1234";
+    api호출(회원가입(phoneNumber, DEFAULT_PASSWORD));
+
+    String token = objectMapper.readValue(
+            api호출(로그인(phoneNumber, DEFAULT_PASSWORD)).getContentAsString(),
+            new TypeReference<CustomResponse<String>>() {
+            })
+        .getData();
+    MockHttpServletResponse response = api호출(로그아웃(token));
+    Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+  }
+
   private RequestBuilder 회원가입(String phoneNumber, String password) throws JsonProcessingException {
     return post("/member/sign/up")
         .contentType(MediaType.APPLICATION_JSON)
@@ -89,5 +117,11 @@ class MemberControllerTest extends ControllerTestMustExtends {
     return post("/member/sign/in")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(new SignInRequest(phoneNumber, password)));
+  }
+
+  private RequestBuilder 로그아웃(String token) throws Exception {
+    return post("/member/sign/out")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(new SignOutRequest(token)));
   }
 }
