@@ -272,7 +272,7 @@ class ProductControllerTest extends ControllerTestMustExtends {
     }
 
     @Test
-    void 사장님이_로그인한_경우_상품은_삭제된다() throws Exception {
+    void 사장님이_로그인한_경우_자신의_상품은_삭제된다() throws Exception {
       String token = 회원가입로그인성공후토큰반환();
       로그인후_상품등록(token);
       Long productId = 상품커서조회결과(token).get(0).id();
@@ -329,7 +329,7 @@ class ProductControllerTest extends ControllerTestMustExtends {
     }
 
     @Test
-    void 사장님이_로그인한_경우_상품은_업데이트된다() throws Exception {
+    void 사장님이_로그인한_경우_자신의_상품은_업데이트된다() throws Exception {
       String token = 회원가입로그인성공후토큰반환();
       로그인후_상품등록(token);
       Long productId = 상품커서조회결과(token).get(0).id();
@@ -400,7 +400,7 @@ class ProductControllerTest extends ControllerTestMustExtends {
         "13,10",
         "14,10"
     })
-    void 사장님이_로그인한_경우_상품은_한번에_10개까지_조회_할수_있다(int length, int expectSize) throws Exception {
+    void 사장님이_로그인한_경우_자신의_상품을_한번에_10개까지_조회_할수_있다(int length, int expectSize) throws Exception {
       String canUseToken = 회원가입로그인성공후토큰반환();
       for (int i = 0; i < length; i++) {
         로그인후_상품등록(canUseToken);
