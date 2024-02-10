@@ -3,6 +3,9 @@ package com.example.maintainer.product.application.service;
 import com.example.maintainer.product.application.port.in.ProductUseCase;
 import com.example.maintainer.product.application.port.out.ProductPort;
 import com.example.maintainer.product.domain.Product;
+import com.example.maintainer.product.domain.ProductSearch;
+import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +39,15 @@ public class ProductService implements ProductUseCase {
     boolean existProduct = productPort.existProduct(phoneNumber, productId);
     return new Product().getProduct(existProduct,
         () -> productPort.getProduct(phoneNumber, productId));
+  }
+
+  @Override
+  public List<ProductSearch> getProductBySearch(String phoneNumber, String searchValue) {
+    return Stream.concat(
+            productPort.getProductByLike(phoneNumber, searchValue).stream(),
+            productPort.getProductByFirstWord(phoneNumber, searchValue).stream()
+        )
+        .distinct()
+        .toList();
   }
 }

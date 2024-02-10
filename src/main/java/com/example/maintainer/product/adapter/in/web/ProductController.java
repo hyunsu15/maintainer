@@ -2,6 +2,8 @@ package com.example.maintainer.product.adapter.in.web;
 
 import com.example.maintainer.product.application.port.in.ProductUseCase;
 import com.example.maintainer.product.domain.Product;
+import com.example.maintainer.product.domain.ProductSearch;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,5 +83,18 @@ public class ProductController {
     return ResponseEntity.ok()
         .body(new CustomResponse(new Meta(
             HttpStatus.OK.value(), "OK"), product));
+  }
+
+  @GetMapping("search")
+  ResponseEntity<CustomResponse<List<ProductSearch>>> getProductBySearch(PhoneNumber phoneNumber,
+      ProductSearchRequest request) {
+    List<ProductSearch> products = useCase.getProductBySearch(phoneNumber.phoneNumber(),
+        request.searchValue());
+    if (products.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.ok()
+        .body(new CustomResponse(new Meta(
+            HttpStatus.OK.value(), "OK"), products));
   }
 }
