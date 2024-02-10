@@ -30,7 +30,8 @@ public class ProductPersistenceAdapter implements ProductPort {
 
   @Override
   public boolean existProduct(String phoneNumber, Long productId) {
-    return productJpaRepository.existsByMemberPhoneNumberAndId(phoneNumber, productId);
+    return productJpaRepository.exists(
+        equalsPhoneNumber(phoneNumber).and(findByIds(List.of(productId))));
   }
 
   @Override

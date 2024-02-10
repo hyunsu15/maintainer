@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Long>,
     JpaSpecificationExecutor<ProductJpaEntity> {
 
-  boolean existsByMemberPhoneNumberAndId(String memberPhoneNumber, Long id);
 }
