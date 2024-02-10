@@ -17,4 +17,8 @@ public class CursorId {
     }
     return id;
   }
+
+  public CursorId getNextCursorId() {
+    return new CursorId(id + 1);
+  }
 }

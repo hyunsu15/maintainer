@@ -121,7 +121,7 @@ public class ProductPersistenceAdapter implements ProductPort {
         .stream()
         .map(productJpaEntity -> new CursorId(productJpaEntity.getId()))
         .findAny()
-        .orElseGet(() -> new CursorId(cursorId.getId() + 1L));
+        .orElseGet(() -> cursorId.getNextCursorId());
 
   }
 
