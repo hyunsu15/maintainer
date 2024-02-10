@@ -79,6 +79,12 @@ class ProductControllerTest extends ControllerTestMustExtends {
         .content(objectMapper.writeValueAsString(new SignInRequest(phoneNumber, password)));
   }
 
+  private RequestBuilder 로그아웃(String token) throws JsonProcessingException {
+    return post("/member/sign/out")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(new SignOutRequest(token)));
+  }
+
   private RequestBuilder 상품저장(String request, String token) throws JsonProcessingException {
     return post("/product")
         .header("X-USER-ID", token)
@@ -136,7 +142,17 @@ class ProductControllerTest extends ControllerTestMustExtends {
     String searchValue = "슈크림";
 
     @Test
-    void 사장님이_로그인하지않은경우_상품은_검색되지_않는다() throws Exception {
+    void 로그아웃된_토큰일경우__상품은_검색되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+      api호출(로그아웃(token));
+
+      MockHttpServletResponse response = api호출(상품이름검색(searchValue, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 유효하지않은_토큰일경우_상품은_검색되지_않는다() throws Exception {
       String canUseToken = 회원가입로그인성공후토큰반환();
       로그인후_상품등록(canUseToken);
 
@@ -188,7 +204,19 @@ class ProductControllerTest extends ControllerTestMustExtends {
   class 상품상세내역 {
 
     @Test
-    void 사장님이_로그인하지않은경우_상품은_조회되지_않는다() throws Exception {
+    void 로그아웃된_토큰일경우_상품은_조회되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+
+      Long productId = 상품커서조회결과(token).get(0).id();
+      api호출(로그아웃(token));
+
+      MockHttpServletResponse response = api호출(상품상세조회(productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 유효하지않은_토큰일경우_상품은_조회되지_않는다() throws Exception {
       String canUseToken = 회원가입로그인성공후토큰반환();
       로그인후_상품등록(canUseToken);
 
@@ -237,7 +265,18 @@ class ProductControllerTest extends ControllerTestMustExtends {
   class 상품삭제 {
 
     @Test
-    void 사장님이_로그인하지않은경우_상품은_삭제되지_않는다() throws Exception {
+    void 로그아웃된_토큰일경우_상품은_삭제되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+      Long productId = 상품커서조회결과(token).get(0).id();
+      api호출(로그아웃(token));
+
+      MockHttpServletResponse response = api호출(상품삭제(productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 유효하지않은_토큰일경우_상품은_삭제되지_않는다() throws Exception {
       String canUseToken = 회원가입로그인성공후토큰반환();
       로그인후_상품등록(canUseToken);
 
@@ -296,7 +335,18 @@ class ProductControllerTest extends ControllerTestMustExtends {
         + "    }";
 
     @Test
-    void 사장님이_로그인하지않은경우_상품은_업데이트되지_않는다() throws Exception {
+    void 로그아웃된_토큰일경우_상품은_업데이트되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      로그인후_상품등록(token);
+      Long productId = 상품커서조회결과(token).get(0).id();
+      api호출(로그아웃(token));
+
+      MockHttpServletResponse response = api호출(상품업데이트(product, productId, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 유효하지않은_토큰일경우_상품은_업데이트되지_않는다() throws Exception {
       String canUseToken = 회원가입로그인성공후토큰반환();
       로그인후_상품등록(canUseToken);
 
@@ -354,7 +404,15 @@ class ProductControllerTest extends ControllerTestMustExtends {
         + "    }";
 
     @Test
-    void 사장님이_로그인하지않은경우_상품은_저장되지_않는다() throws Exception {
+    void 로그아웃된_토큰일경우_상품은_저장되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      api호출(로그아웃(token));
+      MockHttpServletResponse response = api호출(상품저장(product, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 유효하지않은_토큰일경우_상품은_저장되지_않는다() throws Exception {
       String token = 만기된토큰;
       MockHttpServletResponse response = api호출(상품저장(product, token));
       Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -373,7 +431,18 @@ class ProductControllerTest extends ControllerTestMustExtends {
   class 커서조회 {
 
     @Test
-    void 사장님이_로그인하지_않은경우_상품은_커서_조회되지_않는다() throws Exception {
+    void 로그아웃된_토큰일경우_상품은_커서_조회되지_않는다() throws Exception {
+      String token = 회원가입로그인성공후토큰반환();
+      for (int i = 0; i < 15; i++) {
+        로그인후_상품등록(token);
+      }
+      api호출(로그아웃(token));
+      MockHttpServletResponse response = api호출(상품커서조회(0L, token));
+      Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 유효하지않은_토큰일경우_상품은_커서_조회되지_않는다() throws Exception {
       String canUseToken = 회원가입로그인성공후토큰반환();
       for (int i = 0; i < 15; i++) {
         로그인후_상품등록(canUseToken);
