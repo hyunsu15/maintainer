@@ -57,8 +57,36 @@ class MemberControllerTest extends ControllerTestMustExtends {
     Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
   }
 
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "01012344567,1234",
+      "010-1234-1234,123"
+  })
+  void 폰번호가_틀리거나_비밀번호가틀리면_로그인_되지_않는다(String phoneNumber, String password) throws Exception {
+    api호출(회원가입("010-1234-1234", DEFAULT_PASSWORD));
+
+    MockHttpServletResponse response = api호출(로그인(phoneNumber, password));
+    Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  void 폰번호와비밀번호가일치하면_로그인_된다() throws Exception {
+    String phoneNumber = "010-1234-1234";
+    api호출(회원가입(phoneNumber, DEFAULT_PASSWORD));
+
+    MockHttpServletResponse response = api호출(로그인(phoneNumber, DEFAULT_PASSWORD));
+    Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+  }
+
   private RequestBuilder 회원가입(String phoneNumber, String password) throws JsonProcessingException {
     return post("/member/sign/up")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(new SignInRequest(phoneNumber, password)));
+  }
+
+  private RequestBuilder 로그인(String phoneNumber, String password) throws JsonProcessingException {
+    return post("/member/sign/in")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(new SignInRequest(phoneNumber, password)));
   }
